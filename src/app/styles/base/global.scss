@@ -1,0 +1,48 @@
+@use '../abstracts/breakpoints' as *;
+@use '../abstracts/mixins' as *;
+@use '../abstracts/variables' as *;
+
+:root {
+  color: $color-text;
+  background: $color-page;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+
+  --color-page: #{$color-page};
+  --color-surface: #{$color-surface};
+  --color-surface-raised: #{$color-surface-raised};
+  --color-border: #{$color-border};
+  --color-text: #{$color-text};
+  --color-text-muted: #{$color-text-muted};
+  --color-accent: #{$color-accent};
+  --color-accent-soft: #{$color-accent-soft};
+  --color-alert: #{$color-alert};
+  --color-warning: #{$color-warning};
+  --color-success: #{$color-success};
+  --color-shadow: #{$color-shadow};
+  --space-small: #{$space-small};
+  --space-medium: #{$space-medium};
+  --space-large: #{$space-large};
+}
+
+body {
+  color: $color-text;
+  background: $color-page;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+:focus {
+  @include focus-ring;
+}
+
+@include respond-below($breakpoint-tablet) {
+  :root {
+    --space-large: 20px;
+  }
+}

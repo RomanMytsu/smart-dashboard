@@ -1,0 +1,62 @@
+.air-alert-widget__content {
+  width: 100%;
+}
+
+.air-alert-widget__status {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  padding: 0 13px;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.air-alert-widget__marker {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  margin-right: 9px;
+  border-radius: 50%;
+  background: var(--color-text-muted);
+}
+
+.air-alert-widget__status--active {
+  border-color: rgba($color-alert, 0.32);
+  background: rgba($color-alert, 0.1);
+  color: #ffd2c5;
+}
+
+.air-alert-widget__status--active .air-alert-widget__marker {
+  background: var(--color-alert);
+}
+
+.air-alert-widget__status--clear {
+  border-color: rgba(139, 217, 200, 0.26);
+  background: var(--color-accent-soft);
+}
+
+.air-alert-widget__status--clear .air-alert-widget__marker {
+  background: var(--color-success);
+}
+
+.air-alert-widget__status--unavailable,
+.air-alert-widget__status--stale {
+  border-color: rgba(232, 194, 126, 0.28);
+  background: rgba(232, 194, 126, 0.09);
+}
+
+.air-alert-widget__status--unavailable .air-alert-widget__marker,
+.air-alert-widget__status--stale .air-alert-widget__marker {
+  background: var(--color-warning);
+}
+
+.air-alert-widget__description {
+  margin: 12px 0 0;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
