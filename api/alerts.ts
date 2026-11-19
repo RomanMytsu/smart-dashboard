@@ -1,5 +1,3 @@
-import { hasValidSession } from '../server/auth/session.js'
-
 const ALERTS_URL =
   'https://api.alerts.in.ua/v2/iot/active_air_raid_alerts/1293.json'
 const UPSTREAM_TIMEOUT_MS = 10_000
@@ -21,15 +19,27 @@ class AlertsApiError extends Error {
   }
 }
 
-function jsonResponse(payload: unknown, statusCode = 200): Response {
+function jsonResponse(
+  payload: unknown,
+  statusCode = 200,
+  cacheSuccess = false,
+): Response {
+  const headers: Record<string, string> = {
+    'Cache-Control': cacheSuccess
+      ? 'public, max-age=0, must-revalidate'
+      : 'private, no-store',
+    'Content-Type': 'application/json; charset=utf-8',
+    'X-Content-Type-Options': 'nosniff',
+  }
+
+  if (cacheSuccess) {
+    headers['Vercel-CDN-Cache-Control'] =
+      'public, s-maxage=60, stale-while-revalidate=30'
+  }
+
   return new Response(JSON.stringify(payload), {
     status: statusCode,
-    headers: {
-      'Cache-Control': 'private, no-store',
-      'Content-Type': 'application/json; charset=utf-8',
-      'X-Content-Type-Options': 'nosniff',
-      Vary: 'Cookie',
-    },
+    headers,
   })
 }
 
@@ -88,10 +98,6 @@ export default {
       return jsonResponse({ error: { code: 'METHOD_NOT_ALLOWED' } }, 405)
     }
 
-    if (!hasValidSession(request)) {
-      return jsonResponse({ error: { code: 'UNAUTHORIZED' } }, 401)
-    }
-
     if (!process.env.ALERTS_IN_UA_TOKEN) {
       return jsonResponse({ error: { code: 'ALERTS_NOT_CONFIGURED' } }, 503)
     }
@@ -100,7 +106,7 @@ export default {
     const timeout = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS)
 
     try {
-      return jsonResponse(await readUpstreamStatus(controller.signal))
+      return jsonResponse(await readUpstreamStatus(controller.signal), 200, true)
     } catch (error) {
       if (controller.signal.aborted) {
         return jsonResponse({ error: { code: 'ALERTS_TIMEOUT' } }, 504)

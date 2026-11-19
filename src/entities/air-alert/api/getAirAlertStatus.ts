@@ -20,7 +20,6 @@ export async function getAirAlertStatus(
   const response = await fetch('/api/alerts', {
     method: 'GET',
     signal,
-    cache: 'no-store',
   })
 
   if (!response.ok) throw new Error('Air alert request failed')
