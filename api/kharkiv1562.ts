@@ -324,6 +324,15 @@ async function readSourcePage(
   })
 
   if (!response.ok) {
+    console.error('[1562] Upstream HTTP error', {
+      status: response.status,
+      statusText: response.statusText,
+      contentType: response.headers.get('content-type'),
+      server: response.headers.get('server'),
+      retryAfter: response.headers.get('retry-after'),
+      cfRay: response.headers.get('cf-ray'),
+      redirected: response.redirected,
+    })
     throw new ApiError(502, 'SOURCE_HTTP_ERROR')
   }
 
