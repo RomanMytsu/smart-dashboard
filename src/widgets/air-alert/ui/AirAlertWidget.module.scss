@@ -43,14 +43,34 @@
   background: var(--color-success);
 }
 
+.air-alert-widget__status--yellow {
+  border-color: rgba(232, 194, 126, 0.32);
+  background: rgba(232, 194, 126, 0.1);
+  color: #f0d9a8;
+}
+
+.air-alert-widget__status--yellow .air-alert-widget__marker {
+  background: var(--color-warning);
+}
+
+.air-alert-widget__status--partial {
+  border-color: rgba(193, 171, 255, 0.3);
+  background: rgba(193, 171, 255, 0.1);
+  color: #dfd3ff;
+}
+
+.air-alert-widget__status--partial .air-alert-widget__marker {
+  background: #b7a0f5;
+}
+
 .air-alert-widget__status--unavailable,
-.air-alert-widget__status--stale {
+.air-alert-widget__status--loading {
   border-color: rgba(232, 194, 126, 0.28);
   background: rgba(232, 194, 126, 0.09);
 }
 
 .air-alert-widget__status--unavailable .air-alert-widget__marker,
-.air-alert-widget__status--stale .air-alert-widget__marker {
+.air-alert-widget__status--loading .air-alert-widget__marker {
   background: var(--color-warning);
 }
 
