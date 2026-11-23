@@ -1,4 +1,5 @@
 import type { DailyForecast, WeatherCache, WeatherData } from './types'
+import { isWeatherIconPath } from '@/shared/lib/weatherIcons'
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -18,17 +19,7 @@ function isLocalTime(value: unknown): value is string {
 
 function isWeatherIconUrl(value: unknown): value is string | null {
   if (value === null) return true
-  if (typeof value !== 'string') return false
-  try {
-    const url = new URL(value)
-    return url.protocol === 'https:' &&
-      url.hostname === 'cdn.weatherapi.com' &&
-      url.username === '' &&
-      url.password === '' &&
-      url.port === ''
-  } catch {
-    return false
-  }
+  return isWeatherIconPath(value)
 }
 
 function isDailyForecast(value: unknown): value is DailyForecast {
@@ -78,7 +69,7 @@ export function isWeatherData(value: unknown): value is WeatherData {
 export function isWeatherCache(value: unknown): value is WeatherCache {
   return (
     isRecord(value) &&
-    value.version === 2 &&
+    value.version === 3 &&
     isDateTime(value.savedAt) &&
     isWeatherData(value.data)
   )

@@ -11,8 +11,8 @@ import type {
   WeatherState,
 } from '@/entities/weather'
 
-const CACHE_KEY = 'kharkiv-smart-dashboard:weather:v2'
-const CACHE_VERSION = 2
+const CACHE_KEY = 'kharkiv-smart-dashboard:weather:v3'
+const CACHE_VERSION = 3
 const REFRESH_INTERVAL_MS = 15 * 60 * 1000
 const REQUEST_TIMEOUT_MS = 12 * 1000
 

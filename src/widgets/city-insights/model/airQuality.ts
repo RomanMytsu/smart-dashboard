@@ -1,3 +1,5 @@
+import { KHARKIV_TIME_ZONE } from '@/shared/lib/timeZone'
+
 export interface AirQualityData {
   europeanAqi: number
   pm25: number | null
@@ -26,9 +28,9 @@ export interface EuropeanAqiCategory {
   color: 'good' | 'fair' | 'moderate' | 'poor' | 'very-poor' | 'extremely-poor'
 }
 
-const AIR_QUALITY_URL = 'https://air-quality-api.open-meteo.com/v1/air-quality'
+const AIR_QUALITY_ENDPOINT = '/api/air-quality'
 const kyivDateTimeFormatter = new Intl.DateTimeFormat('en-GB', {
-  timeZone: AIR_QUALITY_TIME_ZONE,
+  timeZone: KHARKIV_TIME_ZONE,
   year: 'numeric',
   month: '2-digit',
   day: '2-digit',
@@ -180,13 +182,7 @@ export function serializeAirQualityCache(data: AirQualityData): string {
 }
 
 export async function fetchAirQuality(signal: AbortSignal): Promise<AirQualityData> {
-  const url = new URL(AIR_QUALITY_URL)
-  url.searchParams.set('latitude', '49.98177')
-  url.searchParams.set('longitude', '36.25475')
-  url.searchParams.set('current', 'european_aqi,pm2_5,pm10')
-  url.searchParams.set('timezone', AIR_QUALITY_TIME_ZONE)
-  url.searchParams.set('domains', 'cams_europe')
-  const response = await fetch(url.toString(), { signal })
+  const response = await fetch(AIR_QUALITY_ENDPOINT, { signal })
   if (!response.ok) throw new Error(`Сервис качества воздуха ответил с кодом ${response.status}`)
 
   const value: unknown = await response.json()

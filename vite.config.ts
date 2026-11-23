@@ -14,6 +14,16 @@ export default defineConfig({
     },
   },
   plugins: [react()],
+  oxc: {
+    target: 'chrome81',
+  },
+  optimizeDeps: {
+    rolldownOptions: {
+      transform: {
+        target: 'chrome81',
+      },
+    },
+  },
   css: {
     preprocessorOptions: {
       scss: {

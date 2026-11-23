@@ -5,25 +5,16 @@ import type {
   WeatherState,
 } from '@/entities/weather'
 import { Panel } from '@/shared/ui/panel'
+import { KHARKIV_TIME_ZONE } from '@/shared/lib/timeZone'
 import styles from './WeatherWidget.module.scss'
 
-const KYIV_TIME_ZONE = 'Europe/Kyiv'
-
 function createDateFormatter(
-  options: Intl.DateTimeFormatOptions,
+  options: Omit<Intl.DateTimeFormatOptions, 'timeZone'>,
 ): Intl.DateTimeFormat {
-  try {
-    return new Intl.DateTimeFormat('ru-RU', {
-      ...options,
-      timeZone: KYIV_TIME_ZONE,
-    })
-  } catch (error) {
-    if (!(error instanceof RangeError)) throw error
-    return new Intl.DateTimeFormat('ru-RU', {
-      ...options,
-      timeZone: 'Europe/Kiev',
-    })
-  }
+  return new Intl.DateTimeFormat('ru-RU', {
+    ...options,
+    timeZone: KHARKIV_TIME_ZONE,
+  })
 }
 
 const clockFormatter = createDateFormatter({ hour: '2-digit', minute: '2-digit', hour12: false })

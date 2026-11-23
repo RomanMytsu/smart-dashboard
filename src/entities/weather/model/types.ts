@@ -60,7 +60,7 @@ export interface WeatherError {
 }
 
 export interface WeatherCache {
-  version: 2
+  version: 3
   savedAt: string
   data: WeatherData
 }

@@ -4,6 +4,7 @@ import type {
   AirAlertHistoryEvent,
 } from '@/entities/air-alert'
 import { Panel } from '@/shared/ui/panel'
+import { KHARKIV_TIME_ZONE } from '@/shared/lib/timeZone'
 import { useAirAlertDetails } from '../model/useAirAlertDetails'
 import { useAirAlertHistory } from '../model/useAirAlertHistory'
 import { useAirAlertStatus } from '../model/useAirAlertStatus'
@@ -13,11 +14,9 @@ import {
 } from '../model/alertTestScenarios'
 import styles from './AirAlertWidget.module.scss'
 
-const KYIV_TIME_ZONE = 'Europe/Kyiv'
-
 function getDateInKyiv(value: Date): string {
   const parts = new Intl.DateTimeFormat('en-GB', {
-    timeZone: KYIV_TIME_ZONE,
+    timeZone: KHARKIV_TIME_ZONE,
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -32,14 +31,14 @@ function getDateInKyiv(value: Date): string {
 function formatKyivTime(value: string, includeDate: boolean): string {
   const date = new Date(value)
   const time = new Intl.DateTimeFormat('ru-RU', {
-    timeZone: KYIV_TIME_ZONE,
+    timeZone: KHARKIV_TIME_ZONE,
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
   }).format(date)
   if (!includeDate) return time
   const dateLabel = new Intl.DateTimeFormat('ru-RU', {
-    timeZone: KYIV_TIME_ZONE,
+    timeZone: KHARKIV_TIME_ZONE,
     day: '2-digit',
     month: '2-digit',
   }).format(date)

@@ -1,4 +1,5 @@
 import type { CurrentWeather, DailyForecast, WeatherData } from '../src/entities/weather/model/types.js'
+import { normalizeWeatherApiIcon } from '../server/weatherIcons.js'
 
 const WEATHER_API_URL = 'https://api.weatherapi.com/v1/forecast.json'
 const LOCATION_TIME_ZONE = 'Europe/Kyiv'
@@ -78,24 +79,6 @@ function readCondition(value: unknown): WeatherApiCondition {
   return value
 }
 
-function normalizeIconUrl(value: unknown): string | null {
-  if (typeof value !== 'string' || value.trim().length === 0) return null
-  const candidate = value.startsWith('//') ? `https:${value}` : value
-  try {
-    const url = new URL(candidate)
-    if (
-      url.protocol !== 'https:' ||
-      url.hostname !== 'cdn.weatherapi.com' ||
-      url.username !== '' ||
-      url.password !== '' ||
-      url.port !== ''
-    ) return null
-    return url.toString()
-  } catch {
-    return null
-  }
-}
-
 function readConditionFields(value: unknown): Pick<CurrentWeather, 'conditionText' | 'conditionIconUrl' | 'conditionCode'> {
   if (value === null || value === undefined) {
     return { conditionText: null, conditionIconUrl: null, conditionCode: null }
@@ -103,7 +86,7 @@ function readConditionFields(value: unknown): Pick<CurrentWeather, 'conditionTex
   const condition = readCondition(value)
   return {
     conditionText: readOptionalString(condition.text),
-    conditionIconUrl: normalizeIconUrl(condition.icon),
+    conditionIconUrl: normalizeWeatherApiIcon(condition.icon),
     conditionCode: readOptionalInteger(condition.code),
   }
 }
