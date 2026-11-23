@@ -1,82 +1,157 @@
+.air-alert-widget--green.air-alert-widget--green {
+  --air-alert-foreground: #fff;
+  border-color: #4f956c;
+  background: #245c43;
+}
+
+.air-alert-widget--red.air-alert-widget--red {
+  --air-alert-foreground: #fff;
+  border-color: #9f5557;
+  background: #762b2d;
+}
+
+.air-alert-widget--yellow.air-alert-widget--yellow {
+  --air-alert-foreground: #17120a;
+  border-color: #e5b84c;
+  background: #c8901e;
+}
+
+.air-alert-widget--orange.air-alert-widget--orange {
+  --air-alert-foreground: #1a0f05;
+  border-color: #ffb15c;
+  background: #ff7b00;
+}
+
+.air-alert-widget__heading {
+  margin-bottom: 8px;
+  color: var(--air-alert-foreground, #fff);
+  font-size: 20px;
+  letter-spacing: 0.01em;
+}
+
+.air-alert-widget--green .air-alert-widget__heading,
+.air-alert-widget--red .air-alert-widget__heading,
+.air-alert-widget--yellow .air-alert-widget__heading,
+.air-alert-widget--orange .air-alert-widget__heading {
+  color: var(--air-alert-foreground);
+}
+
 .air-alert-widget__content {
+  min-width: 0;
   width: 100%;
+  color: var(--air-alert-foreground, var(--color-text));
 }
 
 .air-alert-widget__status {
   display: inline-flex;
-  min-height: 38px;
+  min-height: 28px;
   align-items: center;
-  padding: 0 13px;
-  border: 1px solid var(--color-border);
-  border-radius: 20px;
-  background: var(--color-surface-raised);
-  color: var(--color-text);
-  font-size: 15px;
-  font-weight: 600;
+  color: inherit;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.air-alert-widget__marker,
+.air-alert-widget__threat-marker {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 9px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 .air-alert-widget__marker {
-  width: 8px;
-  height: 8px;
-  flex: 0 0 8px;
   margin-right: 9px;
-  border-radius: 50%;
-  background: var(--color-text-muted);
-}
-
-.air-alert-widget__status--active {
-  border-color: rgba($color-alert, 0.32);
-  background: rgba($color-alert, 0.1);
-  color: #ffd2c5;
-}
-
-.air-alert-widget__status--active .air-alert-widget__marker {
-  background: var(--color-alert);
-}
-
-.air-alert-widget__status--clear {
-  border-color: rgba(139, 217, 200, 0.26);
-  background: var(--color-accent-soft);
-}
-
-.air-alert-widget__status--clear .air-alert-widget__marker {
-  background: var(--color-success);
-}
-
-.air-alert-widget__status--yellow {
-  border-color: rgba(232, 194, 126, 0.32);
-  background: rgba(232, 194, 126, 0.1);
-  color: #f0d9a8;
-}
-
-.air-alert-widget__status--yellow .air-alert-widget__marker {
-  background: var(--color-warning);
-}
-
-.air-alert-widget__status--partial {
-  border-color: rgba(193, 171, 255, 0.3);
-  background: rgba(193, 171, 255, 0.1);
-  color: #dfd3ff;
-}
-
-.air-alert-widget__status--partial .air-alert-widget__marker {
-  background: #b7a0f5;
-}
-
-.air-alert-widget__status--unavailable,
-.air-alert-widget__status--loading {
-  border-color: rgba(232, 194, 126, 0.28);
-  background: rgba(232, 194, 126, 0.09);
-}
-
-.air-alert-widget__status--unavailable .air-alert-widget__marker,
-.air-alert-widget__status--loading .air-alert-widget__marker {
-  background: var(--color-warning);
 }
 
 .air-alert-widget__description {
-  margin: 12px 0 0;
-  color: var(--color-text-muted);
+  margin: 8px 0 0;
+  color: inherit;
+  font-size: $font-size-body;
+  line-height: 1.45;
+  opacity: 0.94;
+}
+
+.air-alert-widget__timing {
+  margin-top: 10px;
+  color: inherit;
   font-size: 14px;
   line-height: 1.45;
+}
+
+.air-alert-widget__timing p {
+  margin: 0;
+}
+
+.air-alert-widget__threats {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.air-alert-widget__threat {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 10px;
+  color: inherit;
+}
+
+.air-alert-widget__threat-marker {
+  margin-top: 6px;
+}
+
+.air-alert-widget__threat-content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.air-alert-widget__threat-timing {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 10px;
+}
+
+.air-alert-widget__threat-label {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.air-alert-widget__threat-time {
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.air-alert-widget__test-mode {
+  display: inline-block;
+  margin: 0 0 8px;
+  padding: 3px 6px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  color: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 480px) {
+  .air-alert-widget__threats {
+    gap: 8px;
+  }
+
+  .air-alert-widget__threat-label {
+    font-size: 17px;
+  }
+
+  .air-alert-widget__threat-time {
+    font-size: 13px;
+  }
 }

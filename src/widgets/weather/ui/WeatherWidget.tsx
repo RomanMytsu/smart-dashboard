@@ -1,11 +1,10 @@
-import { getWeatherPresentation, weatherUnits } from '@/entities/weather'
+import { useState } from 'react'
+import { weatherUnits } from '@/entities/weather'
 import type {
-  WeatherIconKind,
   WeatherRequestDiagnostic,
   WeatherState,
 } from '@/entities/weather'
 import { Panel } from '@/shared/ui/panel'
-import { useWeather } from '../model/useWeather'
 import styles from './WeatherWidget.module.scss'
 
 const KYIV_TIME_ZONE = 'Europe/Kyiv'
@@ -97,8 +96,8 @@ function getDiagnosticStageLabel(stage: WeatherRequestDiagnostic['stage']): stri
 function WeatherAttribution() {
   return (
     <div className={styles['weather-widget__attribution']}>
-      <a href="https://open-meteo.com/" rel="noreferrer" target="_blank">
-        Погода: Open-Meteo
+      <a href="https://www.weatherapi.com/" rel="noreferrer" target="_blank">
+        Погода: WeatherAPI
       </a>
       <a href="https://www.geonames.org/" rel="noreferrer" target="_blank">
         Город: GeoNames
@@ -107,7 +106,7 @@ function WeatherAttribution() {
   )
 }
 
-function WeatherIcon({ kind, className }: { kind: WeatherIconKind; className?: string }) {
+function WeatherIcon({ className }: { className?: string }) {
   return (
     <svg
       aria-hidden="true"
@@ -115,46 +114,31 @@ function WeatherIcon({ kind, className }: { kind: WeatherIconKind; className?: s
       fill="none"
       viewBox="0 0 48 48"
     >
-      {kind === 'sun' && (
-        <>
-          <circle cx="24" cy="24" r="8" />
-          <path d="M24 4v6m0 28v6M4 24h6m28 0h6M9.9 9.9l4.2 4.2m19.8 19.8 4.2 4.2m0-28.2-4.2 4.2M14.1 33.9l-4.2 4.2" />
-        </>
-      )}
-      {kind === 'moon' && <path d="M34 31A16 16 0 0 1 17 8a16 16 0 1 0 17 23Z" />}
-      {kind === 'cloud' && <path d="M12 34h23a8 8 0 0 0 0-16h-1a12 12 0 0 0-23 4 6 6 0 0 0 1 12Z" />}
-      {kind === 'fog' && (
-        <>
-          <path d="M12 25h23a7 7 0 0 0 0-14h-1a11 11 0 0 0-21 4" />
-          <path d="M8 32h30M12 39h24" />
-        </>
-      )}
-      {kind === 'drizzle' && (
-        <>
-          <path d="M12 27h23a7 7 0 0 0 0-14h-1a11 11 0 0 0-21 4" />
-          <path d="m17 33-2 4m11-4-2 4m11-4-2 4" />
-        </>
-      )}
-      {kind === 'rain' && (
-        <>
-          <path d="M12 26h23a7 7 0 0 0 0-14h-1a11 11 0 0 0-21 4" />
-          <path d="m17 32-3 7m13-7-3 7m13-7-3 7" />
-        </>
-      )}
-      {kind === 'snow' && (
-        <>
-          <path d="M12 24h23a7 7 0 0 0 0-14h-1a11 11 0 0 0-21 4" />
-          <path d="M16 31v8m-3-2 6-4m0 4-6-4m14-2v8m-3-2 6-4m0 4-6-4" />
-        </>
-      )}
-      {kind === 'storm' && (
-        <>
-          <path d="M12 26h23a7 7 0 0 0 0-14h-1a11 11 0 0 0-21 4" />
-          <path d="m26 28-7 10h6l-2 7 9-12h-6l2-5Z" />
-        </>
-      )}
-      {kind === 'unknown' && <circle cx="24" cy="24" r="16" />}
+      <path d="M12 34h23a8 8 0 0 0 0-16h-1a12 12 0 0 0-23 4 6 6 0 0 0 1 12Z" />
     </svg>
+  )
+}
+
+function WeatherConditionImage({
+  src,
+  alt,
+  className,
+}: {
+  src: string | null
+  alt: string
+  className: string
+}) {
+  const [failed, setFailed] = useState(false)
+  if (!src || failed) {
+    return <WeatherIcon className={className} />
+  }
+  return (
+    <img
+      alt={alt}
+      className={className}
+      onError={() => setFailed(true)}
+      src={src}
+    />
   )
 }
 
@@ -162,7 +146,7 @@ function WeatherDetails({ state, refresh }: { state: WeatherState; refresh: () =
   if (state.status === 'loading' || state.status === 'error') {
     return (
       <div className={styles['weather-widget__empty']}>
-        <WeatherIcon className={styles['weather-widget__empty-icon']} kind="cloud" />
+        <WeatherIcon className={styles['weather-widget__empty-icon']} />
         <p className={styles['weather-widget__empty-title']}>
           {state.status === 'loading' ? 'Подключение погоды' : 'Погода недоступна'}
         </p>
@@ -180,31 +164,28 @@ function WeatherDetails({ state, refresh }: { state: WeatherState; refresh: () =
   }
 
   const { data } = state
-  const currentPresentation = getWeatherPresentation(
-    data.current.weatherCode,
-    data.current.isDay,
-  )
-
   return (
     <div className={styles['weather-widget__body']}>
       <div className={styles['weather-widget__current']}>
         <div className={styles['weather-widget__summary']}>
-          <WeatherIcon
+          <WeatherConditionImage
+            alt={data.current.conditionText ?? 'Погодные условия'}
             className={styles['weather-widget__condition-icon']}
-            kind={currentPresentation.icon}
+            key={data.current.conditionIconUrl ?? 'current-weather-fallback'}
+            src={data.current.conditionIconUrl}
           />
           <div className={styles['weather-widget__temperature-block']}>
             <p className={styles['weather-widget__temperature']}>
               {formatTemperature(data.current.temperatureCelsius)}
             </p>
             <p className={styles['weather-widget__condition']}>
-              {currentPresentation.description}
+              {data.current.conditionText ?? 'Условия не указаны'}
             </p>
           </div>
         </div>
         <dl className={styles['weather-widget__metrics']}>
-          <div>
-            <dt>Ощущается</dt>
+          <div className={styles['weather-widget__metric--feels-like']}>
+            <dt>Ощущается как</dt>
             <dd>{formatTemperature(data.current.apparentTemperatureCelsius)}</dd>
           </div>
           <div>
@@ -214,9 +195,9 @@ function WeatherDetails({ state, refresh }: { state: WeatherState; refresh: () =
           <div>
             <dt>Ветер</dt>
             <dd>
-              {data.current.windSpeedKmh === null
+              {data.current.windSpeedMetersPerSecond === null
                 ? '—'
-                : `${Math.round(data.current.windSpeedKmh)} ${weatherUnits.windSpeed}`}
+                : `${data.current.windSpeedMetersPerSecond.toFixed(1)} м/с`}
             </dd>
           </div>
         </dl>
@@ -224,15 +205,16 @@ function WeatherDetails({ state, refresh }: { state: WeatherState; refresh: () =
 
       <div aria-label="Прогноз на три дня" className={styles['weather-widget__forecast']}>
         {data.daily.map((day, index) => {
-          const presentation = getWeatherPresentation(day.weatherCode)
           return (
             <div className={styles['weather-widget__day']} key={day.date}>
               <p className={styles['weather-widget__day-name']}>
                 {getDayLabel(day.date, index)}
               </p>
-              <WeatherIcon
+              <WeatherConditionImage
+                alt={day.conditionText ?? 'Погодные условия'}
                 className={styles['weather-widget__day-icon']}
-                kind={presentation.icon}
+                key={day.conditionIconUrl ?? `${day.date}-weather-fallback`}
+                src={day.conditionIconUrl}
               />
               <p className={styles['weather-widget__day-temperature']}>
                 {formatTemperature(day.temperatureMinCelsius)}
@@ -296,12 +278,24 @@ function WeatherDiagnostics({
   )
 }
 
-export function WeatherWidget() {
-  const { state, refresh, diagnostic } = useWeather()
+export function WeatherWidget({
+  state,
+  refresh,
+  diagnostic,
+}: {
+  state: WeatherState
+  refresh: () => void
+  diagnostic: WeatherRequestDiagnostic | null
+}) {
   const isWeatherDebug = new URLSearchParams(window.location.search).get('debug') === 'weather'
 
   return (
-    <Panel compact className={styles['weather-widget__panel']} title="Погода · Харьков">
+    <Panel
+      compact
+      className={styles['weather-widget__panel']}
+      title="Погода"
+      titleClassName={styles['weather-widget__title']}
+    >
       <div className={styles['weather-widget__content']}>
         <WeatherDetails refresh={refresh} state={state} />
         {isWeatherDebug && <WeatherDiagnostics diagnostic={diagnostic} />}

@@ -1,0 +1,121 @@
+.city-insights__panel {
+  min-width: 0;
+}
+
+.city-insights__content {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+}
+
+.city-insights__section {
+  min-width: 0;
+  padding: 2px 10px;
+}
+
+.city-insights__section + .city-insights__section {
+  border-left: 1px solid var(--color-border);
+}
+
+.city-insights__section-title {
+  margin: 0 0 10px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.city-insights__primary {
+  margin: 0 0 7px;
+  color: var(--color-text);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.city-insights__primary span {
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.city-insights__primary .city-insights__badge--good,
+.city-insights__primary .city-insights__badge--fair,
+.city-insights__primary .city-insights__badge--moderate,
+.city-insights__primary .city-insights__badge--poor,
+.city-insights__primary .city-insights__badge--very-poor,
+.city-insights__primary .city-insights__badge--extremely-poor {
+  display: inline-block;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  vertical-align: bottom;
+}
+
+.city-insights__sun-times {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0 0 7px;
+}
+
+.city-insights__sun-times div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.city-insights__sun-times span {
+  color: var(--color-text-muted);
+  font-size: $font-size-caption;
+  line-height: 1.3;
+}
+
+.city-insights__sun-times strong {
+  color: var(--color-text);
+  font-size: $font-size-emphasis;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.city-insights__detail,
+.city-insights__note,
+.city-insights__source {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: $font-size-caption;
+  line-height: 1.4;
+}
+
+.city-insights__note {
+  margin-top: 3px;
+}
+
+.city-insights__source {
+  margin-top: 6px;
+  font-size: 10px;
+}
+
+.city-insights__badge--good { color: var(--color-success); }
+.city-insights__badge--fair { color: var(--color-accent); }
+.city-insights__badge--moderate { color: var(--color-warning); }
+.city-insights__badge--poor,
+.city-insights__badge--very-poor,
+.city-insights__badge--extremely-poor { color: var(--color-alert); }
+
+@include respond-below($breakpoint-mobile) {
+  .city-insights__content {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .city-insights__section {
+    padding: 0;
+  }
+
+  .city-insights__section + .city-insights__section {
+    padding-top: 10px;
+    border-top: 1px solid var(--color-border);
+    border-left: 0;
+  }
+}

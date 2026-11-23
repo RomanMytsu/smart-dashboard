@@ -12,6 +12,25 @@ function isDateTime(value: unknown): value is string {
   return typeof value === 'string' && !Number.isNaN(Date.parse(value))
 }
 
+function isLocalTime(value: unknown): value is string {
+  return typeof value === 'string' && /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(value)
+}
+
+function isWeatherIconUrl(value: unknown): value is string | null {
+  if (value === null) return true
+  if (typeof value !== 'string') return false
+  try {
+    const url = new URL(value)
+    return url.protocol === 'https:' &&
+      url.hostname === 'cdn.weatherapi.com' &&
+      url.username === '' &&
+      url.password === '' &&
+      url.port === ''
+  } catch {
+    return false
+  }
+}
+
 function isDailyForecast(value: unknown): value is DailyForecast {
   if (!isRecord(value)) return false
   const date = value.date
@@ -22,10 +41,15 @@ function isDailyForecast(value: unknown): value is DailyForecast {
     parsedDate !== null &&
     !Number.isNaN(parsedDate.getTime()) &&
     parsedDate.toISOString().slice(0, 10) === date &&
-    (value.weatherCode === null || (typeof value.weatherCode === 'number' && Number.isInteger(value.weatherCode))) &&
+    (value.conditionCode === null || (typeof value.conditionCode === 'number' && Number.isInteger(value.conditionCode))) &&
     isFiniteNumberOrNull(value.temperatureMinCelsius) &&
     isFiniteNumberOrNull(value.temperatureMaxCelsius) &&
-    isFiniteNumberOrNull(value.precipitationProbabilityPercent)
+    isFiniteNumberOrNull(value.precipitationProbabilityPercent) &&
+    (value.conditionText === null || typeof value.conditionText === 'string') &&
+    isWeatherIconUrl(value.conditionIconUrl) &&
+    (value.sunrise === null || isLocalTime(value.sunrise)) &&
+    (value.sunset === null || isLocalTime(value.sunset)) &&
+    isFiniteNumberOrNull(value.daylightDurationSeconds)
   )
 }
 
@@ -40,8 +64,10 @@ export function isWeatherData(value: unknown): value is WeatherData {
     isFiniteNumberOrNull(current.relativeHumidityPercent) &&
     isFiniteNumberOrNull(current.apparentTemperatureCelsius) &&
     (current.isDay === null || typeof current.isDay === 'boolean') &&
-    (current.weatherCode === null || (typeof current.weatherCode === 'number' && Number.isInteger(current.weatherCode))) &&
-    isFiniteNumberOrNull(current.windSpeedKmh) &&
+    (current.conditionText === null || typeof current.conditionText === 'string') &&
+    isWeatherIconUrl(current.conditionIconUrl) &&
+    (current.conditionCode === null || (typeof current.conditionCode === 'number' && Number.isInteger(current.conditionCode))) &&
+    isFiniteNumberOrNull(current.windSpeedMetersPerSecond) &&
     isFiniteNumberOrNull(current.windDirectionDegrees) &&
     Array.isArray(value.daily) &&
     value.daily.length === 3 &&
@@ -52,7 +78,7 @@ export function isWeatherData(value: unknown): value is WeatherData {
 export function isWeatherCache(value: unknown): value is WeatherCache {
   return (
     isRecord(value) &&
-    value.version === 1 &&
+    value.version === 2 &&
     isDateTime(value.savedAt) &&
     isWeatherData(value.data)
   )

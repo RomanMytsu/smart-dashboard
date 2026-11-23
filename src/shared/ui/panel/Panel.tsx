@@ -5,10 +5,11 @@ export interface PanelProps {
   title: string
   children: ReactNode
   className?: string
+  titleClassName?: string
   compact?: boolean
 }
 
-export function Panel({ title, children, className, compact = false }: PanelProps) {
+export function Panel({ title, children, className, titleClassName, compact = false }: PanelProps) {
   const panelClassName = [
     styles.panel,
     compact ? styles['panel--compact'] : '',
@@ -19,7 +20,7 @@ export function Panel({ title, children, className, compact = false }: PanelProp
 
   return (
     <section aria-label={title} className={panelClassName}>
-      <h2 className={styles['panel__title']}>{title}</h2>
+      <h2 className={[styles['panel__title'], titleClassName ?? ''].filter(Boolean).join(' ')}>{title}</h2>
       <div className={styles['panel__content']}>{children}</div>
     </section>
   )

@@ -1,7 +1,7 @@
 export interface WeatherUnits {
   temperature: '°C'
   humidity: '%'
-  windSpeed: 'km/h'
+  windSpeed: 'm/s'
   windDirection: '°'
   precipitationProbability: '%'
 }
@@ -9,7 +9,7 @@ export interface WeatherUnits {
 export const weatherUnits: WeatherUnits = {
   temperature: '°C',
   humidity: '%',
-  windSpeed: 'km/h',
+  windSpeed: 'm/s',
   windDirection: '°',
   precipitationProbability: '%',
 }
@@ -20,17 +20,24 @@ export interface CurrentWeather {
   relativeHumidityPercent: number | null
   apparentTemperatureCelsius: number | null
   isDay: boolean | null
-  weatherCode: number | null
-  windSpeedKmh: number | null
+  conditionText: string | null
+  conditionIconUrl: string | null
+  conditionCode: number | null
+  windSpeedMetersPerSecond: number | null
   windDirectionDegrees: number | null
 }
 
 export interface DailyForecast {
   date: string
-  weatherCode: number | null
+  conditionText: string | null
+  conditionIconUrl: string | null
+  conditionCode: number | null
   temperatureMinCelsius: number | null
   temperatureMaxCelsius: number | null
   precipitationProbabilityPercent: number | null
+  sunrise: string | null
+  sunset: string | null
+  daylightDurationSeconds: number | null
 }
 
 export interface WeatherData {
@@ -53,7 +60,7 @@ export interface WeatherError {
 }
 
 export interface WeatherCache {
-  version: 1
+  version: 2
   savedAt: string
   data: WeatherData
 }
@@ -65,21 +72,7 @@ export type WeatherState =
   | { status: 'stale'; data: WeatherData; error: WeatherError }
   | { status: 'error'; data: null; error: WeatherError }
 
-export type WeatherIconKind =
-  | 'sun'
-  | 'moon'
-  | 'cloud'
-  | 'fog'
-  | 'drizzle'
-  | 'rain'
-  | 'snow'
-  | 'storm'
-  | 'unknown'
-
-export interface WeatherPresentation {
-  description: string
-  icon: WeatherIconKind
-}
+export type WeatherIconKind = 'cloud'
 
 export type WeatherDiagnosticStage =
   | 'request-ready'

@@ -11,8 +11,8 @@ import type {
   WeatherState,
 } from '@/entities/weather'
 
-const CACHE_KEY = 'kharkiv-smart-dashboard:weather:v1'
-const CACHE_VERSION = 1
+const CACHE_KEY = 'kharkiv-smart-dashboard:weather:v2'
+const CACHE_VERSION = 2
 const REFRESH_INTERVAL_MS = 15 * 60 * 1000
 const REQUEST_TIMEOUT_MS = 12 * 1000
 
@@ -99,7 +99,7 @@ export function useWeather(): {
         if (controller.signal.aborted && !didTimeout) return
 
         const weatherError = didTimeout
-          ? { kind: 'timeout' as const, message: 'Open-Meteo не ответил за 12 секунд' }
+          ? { kind: 'timeout' as const, message: 'WeatherAPI не ответил за 12 секунд' }
           : toWeatherError(error)
         const previousData = stateRef.current.data
         setState(
